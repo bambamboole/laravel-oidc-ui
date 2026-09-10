@@ -50,6 +50,16 @@ return [
         'submit' => 'Reset password',
     ],
 
+    'update-password' => [
+        'title' => 'Change password',
+        'heading' => 'Change your password',
+        'subtitle' => 'Choose a new password for your account.',
+        'subtitle-expired' => 'Your password has expired. Choose a new one to continue.',
+        'current' => 'Current password',
+        'new' => 'New password',
+        'submit' => 'Change password',
+    ],
+
     'confirm-password' => [
         'title' => 'Confirm password',
         'heading' => 'Confirm password',
@@ -58,6 +68,14 @@ return [
         'passkey-label' => 'Confirm with passkey',
         'passkey-loading' => 'Confirming...',
         'passkey-separator' => 'Or confirm with password',
+    ],
+
+    'two-factor-setup' => [
+        'title' => 'Two-factor authentication',
+        'heading' => 'Set up two-factor authentication',
+        'subtitle' => 'Add a second step to your sign-in.',
+        'subtitle-required' => 'This account needs two-factor authentication before you can continue.',
+        'continue' => 'Continue',
     ],
 
     'verify-email' => [

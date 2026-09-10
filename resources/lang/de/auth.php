@@ -50,6 +50,16 @@ return [
         'submit' => 'Passwort zurücksetzen',
     ],
 
+    'update-password' => [
+        'title' => 'Passwort ändern',
+        'heading' => 'Passwort ändern',
+        'subtitle' => 'Wähle ein neues Passwort für dein Konto.',
+        'subtitle-expired' => 'Dein Passwort ist abgelaufen. Wähle ein neues, um fortzufahren.',
+        'current' => 'Aktuelles Passwort',
+        'new' => 'Neues Passwort',
+        'submit' => 'Passwort ändern',
+    ],
+
     'confirm-password' => [
         'title' => 'Passwort bestätigen',
         'heading' => 'Passwort bestätigen',
@@ -58,6 +68,14 @@ return [
         'passkey-label' => 'Mit Passkey bestätigen',
         'passkey-loading' => 'Wird bestätigt …',
         'passkey-separator' => 'Oder mit Passwort bestätigen',
+    ],
+
+    'two-factor-setup' => [
+        'title' => 'Zwei-Faktor-Authentifizierung',
+        'heading' => 'Zwei-Faktor-Authentifizierung einrichten',
+        'subtitle' => 'Ergänze deine Anmeldung um einen zweiten Schritt.',
+        'subtitle-required' => 'Dieses Konto benötigt eine Zwei-Faktor-Authentifizierung, bevor es weitergeht.',
+        'continue' => 'Weiter',
     ],
 
     'verify-email' => [

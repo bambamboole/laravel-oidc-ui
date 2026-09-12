@@ -14,8 +14,12 @@ use Bambamboole\LaravelOidc\Server\Authentication\Views\RegisterView;
 use Bambamboole\LaravelOidc\Server\Consents\Views\ConsentView;
 use Bambamboole\LaravelOidc\Server\Credentials\Views\FactorSetupView;
 use Bambamboole\LaravelOidc\Server\Credentials\Views\TwoFactorChallengeView;
+use Bambamboole\LaravelOidc\Server\Realms\Enums\RealmRouting;
+use Bambamboole\LaravelOidc\Server\Realms\Http\Middleware\ResolveRealm;
 use Bambamboole\LaravelOidc\Server\Sessions\Views\LogoutConfirmationView;
 use Illuminate\Support\ServiceProvider;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Http\Middleware\UseEndpointArea;
 
 /**
  * Binds this package's Lattice pages as the container implementation of
@@ -36,9 +40,18 @@ use Illuminate\Support\ServiceProvider;
  */
 class UiServiceProvider extends ServiceProvider
 {
+    private const string ENDPOINT_AREA = 'oidc-ui';
+
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/oidc-ui.php', 'oidc-ui');
+
+        // The auth screens are reached without a session: mid-login, before a
+        // required action is settled, or as a guest. Their components must call
+        // back into endpoints that do not demand one, so they are served from
+        // their own endpoint area and the screens activate it. Set in register()
+        // because the server's route file reads the key while it boots.
+        config(['oidc.routes.screen_middleware' => [UseEndpointArea::class.':'.self::ENDPOINT_AREA]]);
 
         $this->app->bind(LoginView::class, Pages\LoginPage::class);
         $this->app->bind(RegisterView::class, Pages\RegisterPage::class);
@@ -55,10 +68,15 @@ class UiServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Registered directly on the loader rather than via loadTranslationsFrom():
-        // the i18next route resolves only the translation loader, never the
-        // translator, so the deferred loadTranslationsFrom() callback would never fire.
-        $this->app->make('translation.loader')->addNamespace('oidc-ui', __DIR__.'/../resources/lang');
+        // ResolveRealm ahead of `web`, as the package's own routes order them:
+        // it names the realm's session cookie before the session starts.
+        Lattice::endpoints(
+            self::ENDPOINT_AREA,
+            prefix: trim(RealmRouting::configured()->prefix().'/oidc-ui', '/'),
+            middleware: [ResolveRealm::class, 'web'],
+        );
+
+        Lattice::translations('oidc-ui', __DIR__.'/../resources/lang');
 
         $this->publishes([
             __DIR__.'/../config/oidc-ui.php' => config_path('oidc-ui.php'),
